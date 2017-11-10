@@ -1,0 +1,11 @@
+language: ruby
+rvm:
+  - 2.3.0
+  - 2.2.3
+
+script:
+  - bundle exec rake test
+  - bundle exec rubocop -S -D
+
+sudo: false
+cache: bundler

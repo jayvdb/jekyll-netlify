@@ -1,0 +1,5 @@
+# Site settings
+title: Jekyll Test Site for Jekyll::Netlify
+description: "This is a test jekyll site with git contents to properly test the Jekyll::Netlify generator"
+baseurl: ""
+url: "http://example.com"
