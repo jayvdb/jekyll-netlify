@@ -31,7 +31,7 @@ This plugin adds hash of `site.netlify` containing
 
 - repository_url
 - branch
-- pull_request: bool
+- pull_request: bool (but the next release it will also be the pull_request number when available)
 - head
 - commit
 - context
