@@ -1,0 +1,22 @@
+---
+AllCops:
+  TargetRubyVersion: 2.1
+Metrics/ClassLength:
+  Exclude:
+    - test/**/*.rb
+Style/FileName:
+  Exclude:
+    - lib/jekyll-netlify.rb
+Metrics/MethodLength:
+  Max: 30
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*.rb
+Style/TrailingCommaInLiteral:
+  Enabled: false
+Style/TrailingCommaInArguments:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/MultilineTernaryOperator:
+  Enabled: false
