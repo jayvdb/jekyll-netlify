@@ -32,6 +32,27 @@ module Jekyll
         ENV['PULL_REQUEST'].eql?('true') ? true : false
       end
 
+      def pull_request_id(env = ENV)
+        branch = env['BRANCH']
+        return false unless branch =~ /^(pull|merge-requests)/
+
+        parts = branch.split(%r{\/})
+        parts[1].to_i
+      end
+
+      def pull_request_url(env = ENV)
+        repository_url = env['REPOSITORY_URL']
+        if repository_url.start_with? 'git@'
+          repository_url = repository_url.tr(':', '/')
+          repository_url = repository_url.gsub('git@', 'https://')
+        end
+        if repository_url.include? 'gitlab'
+          return repository_url + '/merge_requests/' + pull_request_id.to_s
+        elsif repository_url.include? 'github'
+          return repository_url + '/pulls/' + pull_request_id.to_s
+        end
+      end
+
       def webhook?
         ENV.key?('WEBHOOK_URL')
       end
@@ -40,7 +61,6 @@ module Jekyll
         data = {
           'repository_url' => env['REPOSITORY_URL'],
           'branch' => env['BRANCH'],
-          'pull_request' => pull_request?,
           'head' => env['HEAD'],
           'commit' => env['COMMIT_REF'],
           'context' => env['CONTEXT'],
@@ -48,6 +68,19 @@ module Jekyll
           'url' => ENV['URL'],
           'deploy_prime_url' => env['DEPLOY_PRIME_URL'],
         }
+        if pull_request?
+          id = pull_request_id
+          if id
+            data['pull_request'] = {
+              'id' => id,
+              'url' => pull_request_url,
+            }
+          else
+            data['pull_request'] = true
+          end
+        else
+          data['pull_request'] = false
+        end
         data['webhook'] = !webhook? ? false : {
           'title' => env['WEBHOOK_TITLE'],
           'body' => env['WEBHOOK_BODY'],

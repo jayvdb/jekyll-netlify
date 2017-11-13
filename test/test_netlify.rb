@@ -93,7 +93,7 @@ class Jekyll::NetlifyTest < Minitest::Test
     end
   end
 
-  context 'netlify pull request' do
+  context 'netlify unrecognised pull request' do
     setup do
       Jekyll.instance_variable_set(
         :@logger, Jekyll::LogAdapter.new(Jekyll::Stevenson.new, :error)
@@ -102,7 +102,7 @@ class Jekyll::NetlifyTest < Minitest::Test
       ENV.clear
 
       ENV['URL'] = 'https://example.com'
-      ENV['BRANCH'] = 'master'
+      ENV['BRANCH'] = 'foo/bar'
       ENV['CONTEXT'] = 'deploy-preview'
       ENV['PULL_REQUEST'] = 'true'
       ENV['DEPLOY_URL'] = 'https://578ab634d5d5cf960d620--open-api.netlify.com'
@@ -143,6 +143,102 @@ class Jekyll::NetlifyTest < Minitest::Test
       should 'not include webhook data' do
         assert_operator @netlify, :has_key?, 'webhook'
         assert_equal false, @netlify['webhook']
+      end
+    end
+  end
+
+  context 'netlify github pull request' do
+    setup do
+      Jekyll.instance_variable_set(
+        :@logger, Jekyll::LogAdapter.new(Jekyll::Stevenson.new, :error)
+      )
+
+      ENV.clear
+
+      ENV['REPOSITORY_URL'] = 'https://github.com/foo/bar'
+      ENV['URL'] = 'https://example.com'
+      ENV['BRANCH'] = 'pull/23/head'
+      ENV['CONTEXT'] = 'deploy-preview'
+      ENV['PULL_REQUEST'] = 'true'
+      ENV['DEPLOY_URL'] = 'https://578ab634d5d5cf960d620--open-api.netlify.com'
+      ENV['DEPLOY_PRIME_URL'] = 'https://beta--open-api.netlify.com'
+
+      config = Jekyll.configuration(
+        source: jekyll_test_site,
+        destination: File.join(jekyll_test_site, '_site'),
+      )
+      @site = Jekyll::Site.new(config)
+      @site.read
+      @site.generate
+    end
+
+    context 'info' do
+      setup do
+        @netlify = @site.config['netlify']
+      end
+
+      should 'be a pull request' do
+        assert_operator @netlify, :has_key?, 'pull_request'
+        assert_instance_of Hash, @netlify['pull_request']
+      end
+
+      should 'have a pull request id' do
+        assert_instance_of Integer, @netlify['pull_request']['id']
+        assert_equal 23, @netlify['pull_request']['id']
+      end
+
+      should 'have a pull request url' do
+        assert_instance_of String, @netlify['pull_request']['url']
+        assert_equal 'https://github.com/foo/bar/pulls/23',
+                     @netlify['pull_request']['url']
+      end
+    end
+  end
+
+  context 'netlify gitlab pull request' do
+    setup do
+      Jekyll.instance_variable_set(
+        :@logger, Jekyll::LogAdapter.new(Jekyll::Stevenson.new, :error)
+      )
+
+      ENV.clear
+
+      ENV['REPOSITORY_URL'] = 'git@gitlab.com:foo/bar'
+      ENV['URL'] = 'https://example.com'
+      ENV['BRANCH'] = 'merge-requests/23/head'
+      ENV['CONTEXT'] = 'deploy-preview'
+      ENV['PULL_REQUEST'] = 'true'
+      ENV['DEPLOY_URL'] = 'https://578ab634d5d5cf960d620--open-api.netlify.com'
+      ENV['DEPLOY_PRIME_URL'] = 'https://beta--open-api.netlify.com'
+
+      config = Jekyll.configuration(
+        source: jekyll_test_site,
+        destination: File.join(jekyll_test_site, '_site'),
+      )
+      @site = Jekyll::Site.new(config)
+      @site.read
+      @site.generate
+    end
+
+    context 'info' do
+      setup do
+        @netlify = @site.config['netlify']
+      end
+
+      should 'be a pull request' do
+        assert_operator @netlify, :has_key?, 'pull_request'
+        assert_instance_of Hash, @netlify['pull_request']
+      end
+
+      should 'have a pull request id' do
+        assert_instance_of Integer, @netlify['pull_request']['id']
+        assert_equal 23, @netlify['pull_request']['id']
+      end
+
+      should 'have a pull request url' do
+        assert_instance_of String, @netlify['pull_request']['url']
+        assert_equal 'https://gitlab.com/foo/bar/merge_requests/23',
+                     @netlify['pull_request']['url']
       end
     end
   end
