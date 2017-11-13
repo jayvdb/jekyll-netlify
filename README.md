@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/jayvdb/jekyll-netlify.svg?branch=master)](https://travis-ci.org/jayvdb/jekyll-netlify)
+[![Gem Version](https://badge.fury.io/rb/jekyll-netlify.svg)](https://badge.fury.io/rb/jekyll-netlify)
 
 # Jekyll::Netlify
 
