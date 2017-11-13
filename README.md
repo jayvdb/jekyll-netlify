@@ -8,6 +8,7 @@ and set `site.environment=production`.
 
 ```
 {{site.netlify.branch}} # => Will return the branch name
+{{site.netlify.pull_request.url}} # => Will return http://github.com/foo/bar/pulls/23
 ```
 
 ## Installation
@@ -15,10 +16,12 @@ and set `site.environment=production`.
 Add to your `Gemfile`:
 
 ```
-gem 'jekyll-netlify'
+group :jekyll_plugins do
+  gem "jekyll-netlify"
+end
 ```
 
-Add to your `_config.yml`:
+For older versions of Jekyll, add to your `_config.yml`:
 
 ```yml
 plugins:
@@ -30,9 +33,11 @@ plugins:
 This plugin adds hash of `site.netlify` containing
 [Build Environment information](https://www.netlify.com/docs/continuous-deployment/#build-environment-variables):
 
-- repository_url
+- repository_url (`git@...`)
 - branch
-- pull_request: bool (but the next release it will also be the pull_request number when available)
+- pull_request: (false; true for BitBucket; or Hash for GitHub and GitLab)
+  - id
+  - url
 - head
 - commit
 - context
