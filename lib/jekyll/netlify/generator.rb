@@ -1,3 +1,4 @@
+require_relative 'environment'
 module Jekyll
   module Netlify
     # Netlify plugin generator
@@ -5,12 +6,12 @@ module Jekyll
       safe true
 
       def generate(site)
+        env = Environment.new
         if netlify?
+          ENV['JEKYLL_ENV'] = env.jekyll_env
+          site.config['environment'] = env.jekyll_env
           site.config['netlify'] = load_netlify_env
-          if production?
-            ENV['JEKYLL_ENV'] = 'production'
-            site.config['environment'] = 'production'
-          end
+          site.config['netlify']['environment'] = env.prefixed_env
         else
           site.config['netlify'] = false
         end

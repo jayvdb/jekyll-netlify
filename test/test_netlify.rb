@@ -39,7 +39,7 @@ class Jekyll::NetlifyTest < Minitest::Test
     end
   end
 
-  context 'netlify production deploy' do
+  context 'netlify production context' do
     setup do
       Jekyll.instance_variable_set(
         :@logger, Jekyll::LogAdapter.new(Jekyll::Stevenson.new, :error)
@@ -79,6 +79,7 @@ class Jekyll::NetlifyTest < Minitest::Test
 
       should 'be production' do
         assert_equal 'production', @site.config['environment']
+        assert_equal 'production', @netlify['environment']
       end
 
       should 'not be a pull request' do
@@ -89,6 +90,39 @@ class Jekyll::NetlifyTest < Minitest::Test
       should 'not include webhook data' do
         assert_operator @netlify, :has_key?, 'webhook'
         assert_equal false, @netlify['webhook']
+      end
+    end
+  end
+  context 'netlify deploy-preview context' do
+    setup do
+      Jekyll.instance_variable_set(
+        :@logger, Jekyll::LogAdapter.new(Jekyll::Stevenson.new, :error)
+      )
+
+      ENV.clear
+      ENV['CONTEXT'] = 'deploy-preview'
+      ENV['JEKYLL_ENV'] = 'staging'
+
+      ENV['PULL_REQUEST'] = 'false'
+      ENV['DEPLOY_URL'] = 'https://578ab634d5d5cf960d620--open-api.netlify.com'
+      ENV['DEPLOY_PRIME_URL'] = 'https://beta--open-api.netlify.com'
+
+      config = Jekyll.configuration(
+        source: jekyll_test_site,
+        destination: File.join(jekyll_test_site, '_site'),
+      )
+      @site = Jekyll::Site.new(config)
+      @site.read
+      @site.generate
+    end
+
+    context 'info' do
+      setup do
+        @netlify = @site.config['netlify']
+      end
+      should 'be staging-deploy-preview' do
+        assert_equal 'staging', @site.config['environment']
+        assert_equal 'staging-deploy-preview', @netlify['environment']
       end
     end
   end
@@ -131,8 +165,9 @@ class Jekyll::NetlifyTest < Minitest::Test
         assert_equal 'https://example.com', @netlify['url']
       end
 
-      should 'not be production' do
-        assert_operator @site.config['environment'], :!=, 'production'
+      should 'be production' do
+        assert_equal 'production', @site.config['environment']
+        assert_equal 'production-deploy-preview', @netlify['environment']
       end
 
       should 'be a pull request' do
