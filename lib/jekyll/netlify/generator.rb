@@ -12,6 +12,11 @@ module Jekyll
           site.config['environment'] = env.jekyll_env
           site.config['netlify'] = load_netlify_env
           site.config['netlify']['environment'] = env.prefixed_env
+          if production?
+            site.config['url'] = site.config['netlify']['url']
+          else
+            site.config['url'] = site.config['netlify']['deploy_url']
+          end
         else
           site.config['netlify'] = false
         end

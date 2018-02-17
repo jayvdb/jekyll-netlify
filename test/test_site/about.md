@@ -8,4 +8,4 @@ This is a test Jekyll site for Jekyll::Netlify. You can view the plugin at [Gith
 
 You are welcome to submit pull requests or suggest ideas!
 
-Adding some content
+Site: [site.url]({{ site.url }})

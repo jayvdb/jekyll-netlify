@@ -9,6 +9,10 @@ def jekyll_test_site
   File.join(File.dirname(__FILE__), 'test_site')
 end
 
+def get_about_page(site)
+  return site.pages[0]
+end
+
 class Jekyll::NetlifyTest < Minitest::Test
   context 'normal build' do
     setup do
@@ -26,6 +30,8 @@ class Jekyll::NetlifyTest < Minitest::Test
       @site = Jekyll::Site.new(config)
       @site.read
       @site.generate
+      @site.render
+      @about_page = get_about_page(@site)
     end
 
     context 'netlify info' do
@@ -35,6 +41,13 @@ class Jekyll::NetlifyTest < Minitest::Test
 
       should 'be false' do
         assert_equal false, @netlify
+      end
+    end
+
+    context 'site.url' do
+      should 'be from _config.yml' do
+        assert_equal 'http://fake.com', @site.config['url']
+        assert_operator @about_page.output, :include?, 'http://fake.com'
       end
     end
   end
@@ -61,6 +74,8 @@ class Jekyll::NetlifyTest < Minitest::Test
       @site = Jekyll::Site.new(config)
       @site.read
       @site.generate
+      @site.render
+      @about_page = get_about_page(@site)
     end
 
     context 'info' do
@@ -92,7 +107,17 @@ class Jekyll::NetlifyTest < Minitest::Test
         assert_equal false, @netlify['webhook']
       end
     end
+
+    context 'site.url' do
+      should 'be netlify production url' do
+        assert_equal 'https://example.com', @site.config['url']
+      end
+      should 'be expanded in about.md' do
+        assert_operator @about_page.output, :include?, 'https://example.com'
+      end
+    end
   end
+
   context 'netlify deploy-preview context' do
     setup do
       Jekyll.instance_variable_set(
@@ -100,6 +125,7 @@ class Jekyll::NetlifyTest < Minitest::Test
       )
 
       ENV.clear
+      ENV['URL'] = 'https://example.com'
       ENV['CONTEXT'] = 'deploy-preview'
       ENV['JEKYLL_ENV'] = 'staging'
 
@@ -114,6 +140,8 @@ class Jekyll::NetlifyTest < Minitest::Test
       @site = Jekyll::Site.new(config)
       @site.read
       @site.generate
+      @site.render
+      @about_page = get_about_page(@site)
     end
 
     context 'info' do
@@ -123,6 +151,15 @@ class Jekyll::NetlifyTest < Minitest::Test
       should 'be staging-deploy-preview' do
         assert_equal 'staging', @site.config['environment']
         assert_equal 'staging-deploy-preview', @netlify['environment']
+      end
+    end
+
+    context 'site.url' do
+      should 'be netlify deploy-preview url' do
+        assert_equal ENV['DEPLOY_URL'], @site.config['url']
+      end
+      should 'be expanded in about.md' do
+        assert_operator @about_page.output, :include?, ENV['DEPLOY_URL']
       end
     end
   end
