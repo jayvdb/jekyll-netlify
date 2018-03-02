@@ -43,7 +43,7 @@ module Jekyll
         return false unless branch =~ /^(pull|merge-requests)/
 
         parts = branch.split(%r{\/})
-        parts[1].to_i
+        Integer(parts[1])
       end
 
       def pull_request_url(env = ENV)
