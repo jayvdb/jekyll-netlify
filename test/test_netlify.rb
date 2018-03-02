@@ -10,7 +10,7 @@ def jekyll_test_site
 end
 
 def get_about_page(site)
-  return site.pages[0]
+  site.pages[0]
 end
 
 class Jekyll::NetlifyTest < Minitest::Test
