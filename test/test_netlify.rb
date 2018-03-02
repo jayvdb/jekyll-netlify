@@ -255,7 +255,6 @@ class Jekyll::NetlifyTest < Minitest::Test
       end
 
       should 'have a pull request id' do
-        assert_instance_of Integer, @netlify['pull_request']['id']
         assert_equal 23, @netlify['pull_request']['id']
       end
 
@@ -303,7 +302,6 @@ class Jekyll::NetlifyTest < Minitest::Test
       end
 
       should 'have a pull request id' do
-        assert_instance_of Integer, @netlify['pull_request']['id']
         assert_equal 23, @netlify['pull_request']['id']
       end
 
