@@ -256,7 +256,7 @@ class Jekyll::NetlifyTest < Minitest::Test
 
       should 'have a pull request id' do
         assert_instance_of Integer, @netlify['pull_request']['id']
-        assert_equal @netlify['pull_request']['id'], 23
+        assert @netlify['pull_request']['id'].eql? 23
       end
 
       should 'have a pull request url' do
@@ -304,7 +304,7 @@ class Jekyll::NetlifyTest < Minitest::Test
 
       should 'have a pull request id' do
         assert_instance_of Integer, @netlify['pull_request']['id']
-        assert_equal @netlify['pull_request']['id'], 23
+        assert @netlify['pull_request']['id'].eql? 23
       end
 
       should 'have a pull request url' do
