@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '>= 2.2.10'
   spec.add_development_dependency 'mocha'
   spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'rubocop', '~> 0.41'
+  spec.add_development_dependency 'rubocop', '~> 1.18'
   spec.add_development_dependency 'shoulda'
   spec.add_development_dependency 'kramdown-parser-gfm'
 end
