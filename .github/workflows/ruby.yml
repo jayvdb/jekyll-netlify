@@ -23,7 +23,7 @@ jobs:
         run: bundle exec rake
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
-        if: ${{ github.actor == 'dependabot' }}
+        if: ${{ github.actor == 'dependabot[bot]' }}
         with:
           token: ${{ secrets.GHA_TOKEN }}
           event-type: dependabot-merge-event
