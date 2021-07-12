@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'jekyll', '~> 3.0'
+  spec.add_dependency 'jekyll', '>= 3', '< 5'
 
   spec.add_development_dependency 'bundler', '>= 2.2.10'
   spec.add_development_dependency 'mocha'
