@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'minitest/unit'
 require 'shoulda'
-require 'mocha/mini_test'
+require 'mocha/minitest'
 require 'jekyll'
 require 'jekyll-netlify'
 
