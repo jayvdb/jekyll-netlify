@@ -21,7 +21,3 @@ jobs:
       run: bundle install
     - name: Run tests
       run: bundle exec rake
-    - uses: ahmadnassri/action-dependabot-auto-merge@v2
-      with:
-        target: major
-        github-token: ${{ secrets.GHA_TOKEN }}
