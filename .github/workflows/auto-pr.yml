@@ -1,0 +1,18 @@
+name: Add comment to successful Dependabot PRs
+
+on:
+  workflow_run:
+    workflows: ["Ruby"]
+    types:
+      - completed
+
+jobs:
+  add-dependabot-comment:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Add merge comment for dependabot PRs
+        uses: jo-sm/automerge-dependabot@v1
+        with:
+          run-id: ${{ github.event.workflow_run.id }}
+          token: ${{ secrets.GHA_TOKEN }}
